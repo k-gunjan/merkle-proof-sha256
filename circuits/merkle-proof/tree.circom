@@ -7,6 +7,8 @@ template ShaHashing(nBits) {
     signal input in[nBits];
     signal input bits_as_num;
     signal output out[256];
+    signal output hash_to_decimal;
+
     component hash = Sha256(nBits);
     for (var i=0; i< nBits; i++) {
         hash.in[i] <== in[i];
@@ -24,6 +26,17 @@ template ShaHashing(nBits) {
     }
 
     hash_of_num.out === out;
+
+    // convert hash bits into decimal number
+    // Bits2Num circuit gives correct number output upto input of 16 or so bits.. 
+    //Definitely gives wrong output for 256 bits of input. Maybe some modulo operation 
+    //required on the output to match
+    component b2n = Bits2Num(nBits);
+    for ( var k = 0; k < nBits; k++ ) {
+        b2n.in[k] <== in[ nBits -k -1 ];
+    }
+
+    hash_to_decimal <== b2n.out;
 }
 
 component main { public [ in ] } = ShaHashing(8);
