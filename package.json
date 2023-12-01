@@ -1,0 +1,19 @@
+{
+  "name": "anonymous-login",
+  "version": "1.0.0",
+  "description": "Merkle Tree Membership Proof / circom + snarkjs / login",
+  "main": "index.js",
+  "author": "k-gunjan",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "chai": "^4.3.10",
+    "circom_tester": "^0.0.20",
+    "circomlib": "^2.0.5",
+    "mocha": "^10.2.0"
+  },
+  "scripts": {
+    "test": "mocha --max-old-space-size=4000",
+    "compile": "circom ./merkle-proof/tree.circom --r1cs --wasm --sym -o ./merkle-proof/"
+  }
+}
