@@ -9,7 +9,8 @@ describe("test sha hashing", function () {
     })
     it("hash 8 bits input ", async () => {
         const input = {
-            "in": [0, 0, 1, 1, 0, 0, 0, 0]
+            "in": [0, 0, 1, 1, 0, 0, 0, 0],
+            "bits_as_num": 48
         };
         const witness = await circuit.calculateWitness(input);
         await circuit.assertOut(witness, {});
