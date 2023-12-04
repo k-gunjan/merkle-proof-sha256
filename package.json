@@ -10,6 +10,8 @@
     "chai": "^4.3.10",
     "circom_tester": "^0.0.20",
     "circomlib": "^2.0.5",
+    "crypto": "^1.0.1",
+    "ffjavascript": "^0.2.62",
     "mocha": "^10.2.0"
   },
   "scripts": {
