@@ -30,82 +30,62 @@ function bitArray2buffer(a) {
 }
 
 
-describe("test sha hashing with selector zero", function () {
+describe("prove path with different selectors", function () {
     let circuit;
     this.timeout(100000);
     before(async () => {
         circuit = await wasm_tester.wasm(`./circuits/merkle-proof/tree.circom`);
     })
 
-    it("hash two input bits array", async () => {
-        const input = {
-            "left": [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1],
-            "right": [0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1],
-            "selector": 0
-        };
-        const witness = await circuit.calculateWitness(input);
-        await circuit.assertOut(witness, {});
+    it("Should calculate a root of path and match with root, selector  0b00  => 0", async () => {
 
-        const arrOut = witness.slice(1, 257);
-        // Convert BigInt array to regular integer array
-        const hashoutAsArray = arrOut.map(n => Number(n));
-        // hash of left and right arrays
-        const hashArray = [1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0]
+        const h1 = "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"; //'0'
+        const bh1 = Buffer.from(h1, "hex");
+        const arrIn_bh1 = buffer2bitArray(bh1);
 
-        assert.assert.deepStrictEqual(hashoutAsArray, hashArray, 'Output hash does not match');
+        const h2 = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; //'1'
+        const bh2 = Buffer.from(h2, "hex");
+        const arrIn_bh2 = buffer2bitArray(bh2);
+
+        const h_12 = "b9b10a1bc77d2a241d120324db7f3b81b2edb67eb8e9cf02af9c95d30329aef5"; // hash(0 + 1)
+        const bh12 = Buffer.from(h_12, "hex");
+        const arrIn_bh12 = buffer2bitArray(bh12);
+
+        const h3 = "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"; //'2'
+        const bh3 = Buffer.from(h3, "hex");
+        const arrIn_bh3 = buffer2bitArray(bh3);
+
+        const root = "c80f77387d860fa469920d7ac2f8a959ef83a651f76dc54923734ed76daaef53"; // hash( 12 + 3)
+        const broot = Buffer.from(root, "hex");
+        const arrIn_root = buffer2bitArray(broot);
+
+        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3], "key": 0, "root": arrIn_root }, true);
     });
 
-    it("Should calculate a hash of 2 compressor- hex input , selector = 0", async () => {
+    it("Should calculate a root of path and match with root, selector  0b001  => 1", async () => {
+        // Num2Bits for number 1 -->  100   (in 3 bits, Num2Bits gives reversed bit array)
 
-        const left = "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"; //'0'
-        const right = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; //'1'
-        // left + right as selector = 0
-        const b_b = Buffer.from(left + right, "hex");
-        // const b = Buffer.from(testStr, "utf8");
-        // console.log("buffer:", b_b);
+        const h1 = "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"; //'0'
+        const bh1 = Buffer.from(h1, "hex");
+        const arrIn_bh1 = buffer2bitArray(bh1);
 
-        const hash = crypto.createHash("sha256")
-            .update(b_b)
-            .digest("hex");
-        // console.log("hash:", hash);
+        const h2 = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; //'1'
+        const bh2 = Buffer.from(h2, "hex");
+        const arrIn_bh2 = buffer2bitArray(bh2);
 
-        const b_left = Buffer.from(left, "hex");
-        const b_right = Buffer.from(right, "hex");
-        const arrIn_left = buffer2bitArray(b_left);
-        const arrIn_right = buffer2bitArray(b_right);
+        const h_21 = "ee90f071cfb31af4d9230c8b9d11d0279e1e4f92992a860882aa338b3b60cef9"; // hash(1 + 0)
+        const bh21 = Buffer.from(h_21, "hex");
+        const arrIn_bh21 = buffer2bitArray(bh21);
 
-        const witness = await circuit.calculateWitness({ "left": arrIn_left, "right": arrIn_right, "selector": 0 }, true);
-        const arrOut = witness.slice(1, 257);
-        const hash2 = bitArray2buffer(arrOut).toString("hex");
+        const h3 = "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"; //'2'
+        const bh3 = Buffer.from(h3, "hex");
+        const arrIn_bh3 = buffer2bitArray(bh3);
 
-        // console.log("hash2:", hash2);
-        assert.assert.equal(hash, hash2);
-    });
+        const root = "9786eccf677fa12554d15c5febff2583a04767f1bd309a2e0ff68ba3e455b4d5"; // hash( 21 + 3)
+        const broot = Buffer.from(root, "hex");
+        const arrIn_root = buffer2bitArray(broot);
 
-    it("Should calculate a hash of 2 compressor- hex input , selector = 1", async () => {
-
-        const left = "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"; //'0'
-        const right = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"; //'1'
-        // right + left as selector = 1
-        const b_b = Buffer.from(right + left, "hex");
-        // const b = Buffer.from(testStr, "utf8");
-        // console.log("buffer:", b_b);
-
-        const hash = crypto.createHash("sha256")
-            .update(b_b)
-            .digest("hex");
-        // console.log("hash:", hash);
-
-        const b_left = Buffer.from(left, "hex");
-        const b_right = Buffer.from(right, "hex");
-        const arrIn_left = buffer2bitArray(b_left);
-        const arrIn_right = buffer2bitArray(b_right);
-
-        const witness = await circuit.calculateWitness({ "left": arrIn_left, "right": arrIn_right, "selector": 1 }, true);
-        const arrOut = witness.slice(1, 257);
-        const hash2 = bitArray2buffer(arrOut).toString("hex");
-
-        // console.log("hash2:", hash2);
-        assert.assert.equal(hash, hash2);
+        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3], "key": 1, "root": arrIn_root }, true);
     });
 });
+
