@@ -19,7 +19,7 @@ template ShaHashing(nBits) {
         switcher[s].R <== right[s];
         
         hash.in[s] <== switcher[s].outL;
-        hash.in[s + 256] <== switcher[s].outR;
+        hash.in[s + nBits] <== switcher[s].outR;
     }
 
     out<== hash.out;
@@ -46,7 +46,6 @@ template VerifyMerklePath(nLevels) {
     levels[0].right <== path[1];
 
     for (var i=1; i < nLevels -1; i++ ) {
-    // for (var i=nLevels - 1; i >=0; i-- ) {
         levels[i] = ShaHashing(256);
         levels[i].selector <== n2b.out[i];
         levels[i].left <== levels[i - 1].out;
