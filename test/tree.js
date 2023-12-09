@@ -59,7 +59,7 @@ describe("prove path with different selectors", function () {
         const broot = Buffer.from(root, "hex");
         const arrIn_root = buffer2bitArray(broot);
 
-        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3], "key": 0, "root": arrIn_root }, true);
+        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3, Array(256).fill(0), Array(256).fill(0), Array(256).fill(0), Array(256).fill(0), Array(256).fill(0)], "key": 0, "root": arrIn_root }, true);
     });
 
     it("Should calculate a root of path and match with root, selector  0b001  => 1", async () => {
@@ -85,7 +85,7 @@ describe("prove path with different selectors", function () {
         const broot = Buffer.from(root, "hex");
         const arrIn_root = buffer2bitArray(broot);
 
-        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3], "key": 1, "root": arrIn_root }, true);
+        const witness = await circuit.calculateWitness({ "path": [arrIn_bh1, arrIn_bh2, arrIn_bh3, Array(256).fill(0), Array(256).fill(0), Array(256).fill(0), Array(256).fill(0), Array(256).fill(0)], "key": 1, "root": arrIn_root }, true);
     });
 });
 

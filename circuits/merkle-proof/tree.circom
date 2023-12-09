@@ -4,6 +4,7 @@ include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
 include "../../node_modules/circomlib/circuits/bitify.circom";
 include "../../node_modules/circomlib/circuits/switcher.circom";
 // hashes input of nBits and produces 256 bits output
+// if the right signal is zero then return the left
 template ShaHashing(nBits) {
     signal input left[nBits];
     signal input right[nBits];
@@ -22,7 +23,19 @@ template ShaHashing(nBits) {
         hash.in[s + nBits] <== switcher[s].outR;
     }
 
-    out<== hash.out;
+    var isZero = 1;
+    for (var i=0; i < nBits; i++ ) {
+        if ( right[i] == 1 ){
+            isZero = 0;
+        }
+    }
+
+    signal k[256];
+    for (var j=0; j < 256; j++ ) {
+        k[j] <--  isZero == 0? hash.out[j] : left[j] ;
+        out[j] <==  k[j] ;
+        // out[j] === left[j] + isZero*(hash.out[j] - left[j]);
+    }
 }
 
 template VerifyMerklePath(nLevels) {
@@ -50,11 +63,9 @@ template VerifyMerklePath(nLevels) {
         levels[i].selector <== n2b.out[i];
         levels[i].left <== levels[i - 1].out;
         levels[i].right <== path[i + 1];
-
-        root === levels[nLevels - 2].out;
-
     }
+    root === levels[nLevels - 2].out;
 }
 
-component main { public [ root ] } = VerifyMerklePath(3);
+component main { public [ root ] } = VerifyMerklePath(8);
 
