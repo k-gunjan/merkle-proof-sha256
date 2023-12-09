@@ -67,5 +67,4 @@ template VerifyMerklePath(nLevels) {
     root === levels[nLevels - 2].out;
 }
 
-component main { public [ root ] } = VerifyMerklePath(8);
 

@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "mocha --max-old-space-size=4000",
-    "compile": "circom ./circuits/merkle-proof/tree.circom --r1cs --wasm --sym -o ./build/circuits/"
+    "compile_tree": "circom ./circuits/merkle-proof/tree.circom --r1cs --wasm --sym -o ./build/circuits/",
+    "compile": "circom ./circuits/merkle-proof/login.circom --r1cs --wasm --sym -o ./build/circuits/"
   }
 }

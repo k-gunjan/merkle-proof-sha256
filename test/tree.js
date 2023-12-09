@@ -1,40 +1,18 @@
 import assert from "chai";
 import wasm_tester from "circom_tester";
 
-import { F1Field, Scalar } from "ffjavascript";
-export const p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-export const Fr = new F1Field(p);
+// import { F1Field, Scalar } from "ffjavascript";
+// export const p = Scalar.fromString("21888242871839275222246405745257275088548364400416034343698204186575808495617");
+// export const Fr = new F1Field(p);
+// import crypto from "crypto";
 import "./../node_modules/circomlib/test/helpers/sha256.js";
-import crypto from "crypto";
+import { bitArray2buffer, buffer2bitArray } from "./helper.js";
 
-
-function buffer2bitArray(b) {
-    const res = [];
-    for (let i = 0; i < b.length; i++) {
-        for (let j = 0; j < 8; j++) {
-            res.push((b[i] >> (7 - j) & 1));
-        }
-    }
-    return res;
-}
-
-function bitArray2buffer(a) {
-    const len = Math.floor((a.length - 1) / 8) + 1;
-    const b = new Buffer.alloc(len);
-
-    for (let i = 0; i < a.length; i++) {
-        const p = Math.floor(i / 8);
-        b[p] = b[p] | (Number(a[i]) << (7 - (i % 8)));
-    }
-    return b;
-}
-
-
-describe("prove path with different selectors", function () {
+describe("prove variable length merkle path ", function () {
     let circuit;
     this.timeout(100000);
     before(async () => {
-        circuit = await wasm_tester.wasm(`./circuits/merkle-proof/tree.circom`);
+        circuit = await wasm_tester.wasm(`./circuits/merkle-proof/tree_test.circom`);
     })
 
     it("Should calculate a root of path and match with root, selector  0b00  => 0", async () => {
