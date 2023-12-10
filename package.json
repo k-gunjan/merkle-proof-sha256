@@ -17,6 +17,7 @@
   "scripts": {
     "test": "mocha --max-old-space-size=4000",
     "compile_tree": "circom ./circuits/merkle-proof/tree.circom --r1cs --wasm --sym -o ./build/circuits/",
-    "compile": "circom ./circuits/merkle-proof/login.circom --r1cs --wasm --sym -o ./build/circuits/"
+    "compile": "circom ./circuits/merkle-proof/login.circom --r1cs --wasm --sym -o ./build/circuits/",
+    "generate:proving-key": "NODE_OPTIONS=--max_old_space_size=8096 snarkjs plonk setup ./build/circuits/login.r1cs ./artifacts/ptau/powersOfTau28_hez_final_22.ptau ./artifacts/proving-key.zkey"
   }
 }
