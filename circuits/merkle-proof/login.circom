@@ -3,21 +3,6 @@ pragma circom 2.1.6;
 include "./tree.circom";
 include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
 
-// if the right signal is zero then return the left
-template Sha256_2(nBits) {
-    signal input left[nBits];
-    signal input right[nBits];
-    signal output out[256];
-
-    component hash = Sha256(nBits + nBits);
-    for (var i=0; i < nBits; i++ ) {
-        hash.in[i] <== left[i];
-        hash.in[i + nBits] <== right[i];
-    }
-
-    out <== hash.out;
-}
-
 template Login(nLevels) {
     signal input identityNullifier[256];
     signal input path[nLevels][256];
