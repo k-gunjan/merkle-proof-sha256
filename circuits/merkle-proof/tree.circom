@@ -3,8 +3,13 @@ pragma circom 2.1.6;
 include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
 include "../../node_modules/circomlib/circuits/bitify.circom";
 include "../../node_modules/circomlib/circuits/switcher.circom";
-// hashes input of nBits and produces 256 bits output
-// if the right signal is zero then return the left
+include "../../node_modules/circomlib/circuits/comparators.circom";
+
+/*
+ * Hashes input of nBits and produces 256 bits output
+ * Ensure hash(left) + hash(right) if right is none zero
+ * otherwiser hash(left).
+ */
 template ShaHashing(nBits) {
     signal input left[nBits];
     signal input right[nBits];
@@ -23,31 +28,45 @@ template ShaHashing(nBits) {
         hash.in[s + nBits] <== switcher[s].outR;
     }
 
-    var isZero = 1;
-    for (var i=0; i < nBits; i++ ) {
-        if ( right[i] == 1 ){
-            isZero = 0;
-        }
-    }
+    // Check if all the bits of right are zero
+    component right_is_zero = IsZero();
+    component b2n = Bits2Num(nBits);
+    b2n.in <== right;
+    right_is_zero.in <== b2n.out;
 
-    signal k[256];
+    signal k_left[256];
+    signal k_left_right[256];
     for (var j=0; j < 256; j++ ) {
-        k[j] <--  isZero == 0? hash.out[j] : left[j] ;
-        out[j] <==  k[j] ;
-        // out[j] === left[j] + isZero*(hash.out[j] - left[j]);
+        k_left[j] <== right_is_zero.out * left[j];
+        k_left_right[j] <== (1 - right_is_zero.out) * hash.out[j];
+        out[j] <==  k_left[j] + k_left_right[j];
     }
 }
 
+
+template Sha256_2(nBits) {
+    signal input left[nBits];
+    signal input right[nBits];
+    signal output out[256];
+
+    component hash = Sha256(nBits + nBits);
+    for (var i=0; i < nBits; i++ ) {
+        hash.in[i] <== left[i];
+        hash.in[i + nBits] <== right[i];
+    }
+
+    out <== hash.out;
+}
+
+/*
+    Verify the merkle path considering only non-zero nodes
+*/
 template VerifyMerklePath(nLevels) {
     signal input path[nLevels][256];
     signal input root[256];
-    // left/ right indicator
+    // left or right indicator
     signal input key;
 
-    //  1  2        3          ...       // inputs nLevel( =3 )
-    //  |/          |
-    //  s0 --root-> s1 -root-> ...       // hashers
-    
     component n2b = Num2Bits(nLevels - 1);
     n2b.in <== key;
 
